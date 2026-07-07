@@ -1,0 +1,32 @@
+dist/
+upstream/
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Runtime output
+results/
+*.log
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# macOS
+.DS_Store
+
+# Editor swap files
+*.swp
+*.swo
+*~

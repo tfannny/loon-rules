@@ -1,0 +1,14 @@
+{
+  "name": "loon-rules",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Convert Loyalsoldier Clash rules into Loon list rules and publish them as release assets.",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test",
+    "build": "node scripts/convert-loon-rules.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

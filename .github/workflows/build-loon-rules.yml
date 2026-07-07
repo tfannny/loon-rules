@@ -1,0 +1,146 @@
+name: Build Loon Rules
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Beijing time 06:00 = UTC 22:10 on the previous day.
+    - cron: "0 22 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-loon-rules
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Test converter
+        run: npm test
+
+      - name: Clone upstream release branch
+        run: |
+          set -euo pipefail
+
+          git clone \
+            --depth 1 \
+            --branch release \
+            https://github.com/Loyalsoldier/clash-rules.git \
+            upstream
+
+          upstream_commit=$(git -C upstream rev-parse HEAD)
+          upstream_commit_short=$(git -C upstream rev-parse --short HEAD)
+
+          echo "UPSTREAM_COMMIT=${upstream_commit}" >> "$GITHUB_ENV"
+          echo "UPSTREAM_COMMIT_SHORT=${upstream_commit_short}" >> "$GITHUB_ENV"
+
+      - name: Convert rules
+        run: |
+          set -euo pipefail
+
+          node scripts/convert-loon-rules.js \
+            --input upstream \
+            --output dist/loon-rules \
+            --metadata dist/metadata.json
+
+      - name: Build release archive and notes
+        run: |
+          set -euo pipefail
+
+          cd dist
+          zip -r loon-rules.zip loon-rules
+          cd ..
+
+          file_count=$(node -p "require('./dist/metadata.json').fileCount")
+          total_rules=$(node -p "require('./dist/metadata.json').totalRules")
+          updated_at=$(node -p "require('./dist/metadata.json').updatedAt")
+
+          {
+            echo "# Loon rules latest"
+            echo ""
+            echo "- Upstream: Loyalsoldier/clash-rules release branch"
+            echo "- Upstream commit: ${UPSTREAM_COMMIT}"
+            echo "- Converted at: ${updated_at} Asia/Shanghai"
+            echo "- Files: ${file_count}"
+            echo "- Rules: ${total_rules}"
+            echo ""
+            echo "## Subscription URLs"
+            echo ""
+            echo "Primary raw URL pattern:"
+            echo ""
+            echo '```text'
+            echo "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/release/<rule-name>.list"
+            echo '```'
+            echo ""
+            echo "CDN URL pattern:"
+            echo ""
+            echo '```text'
+            echo "https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@release/<rule-name>.list"
+            echo '```'
+            echo ""
+            echo "GitHub Release asset pattern:"
+            echo ""
+            echo '```text'
+            echo "https://github.com/${GITHUB_REPOSITORY}/releases/download/loon-rules-latest/<rule-name>.list"
+            echo '```'
+            echo ""
+            echo "Example:"
+            echo ""
+            echo '```text'
+            echo "https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@release/direct.list"
+            echo '```'
+          } > dist/release-notes.md
+
+      - name: Publish release branch for raw and CDN subscriptions
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          mkdir -p release-branch
+          cp dist/loon-rules/*.list release-branch/
+          cp dist/metadata.json release-branch/
+          cp dist/loon-rules.zip release-branch/
+
+          cd release-branch
+          git init -b release
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "release: update loon rules from ${UPSTREAM_COMMIT_SHORT}"
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --force origin release
+
+      - name: Publish latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          tag="loon-rules-latest"
+
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release delete "$tag" --yes --cleanup-tag
+          fi
+
+          git tag -f "$tag"
+          git push origin ":refs/tags/${tag}" || true
+          git push origin "$tag"
+
+          gh release create "$tag" \
+            dist/loon-rules/*.list \
+            dist/loon-rules.zip \
+            dist/metadata.json \
+            --title "Loon Rules Latest (${UPSTREAM_COMMIT_SHORT})" \
+            --notes-file dist/release-notes.md
