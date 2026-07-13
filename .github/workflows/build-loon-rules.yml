@@ -103,6 +103,7 @@ jobs:
           } > dist/release-notes.md
 
       - name: Publish release branch for raw and CDN subscriptions
+        id: release_branch
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -121,6 +122,7 @@ jobs:
           git commit -m "release: update loon rules from ${UPSTREAM_COMMIT_SHORT}"
           git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push --force origin release
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Publish latest release
         env:
@@ -143,4 +145,4 @@ jobs:
             dist/metadata.json \
             --title "Loon Rules Latest (${UPSTREAM_COMMIT_SHORT})" \
             --notes-file dist/release-notes.md \
-            --target "$GITHUB_SHA"
+            --target "${{ steps.release_branch.outputs.commit }}"
