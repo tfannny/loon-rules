@@ -134,13 +134,13 @@ jobs:
             gh release delete "$tag" --yes --cleanup-tag
           fi
 
-          git tag -f "$tag"
+          git tag -d "$tag" >/dev/null 2>&1 || true
           git push origin ":refs/tags/${tag}" || true
-          git push origin "$tag"
 
           gh release create "$tag" \
             dist/loon-rules/*.list \
             dist/loon-rules.zip \
             dist/metadata.json \
             --title "Loon Rules Latest (${UPSTREAM_COMMIT_SHORT})" \
-            --notes-file dist/release-notes.md
+            --notes-file dist/release-notes.md \
+            --target "$GITHUB_SHA"
