@@ -16,6 +16,11 @@ test("latest release creation targets the generated release branch commit", () =
   );
 });
 
+test("latest release title uses the current Beijing date", () => {
+  assert.match(workflow, /RELEASE_DATE=\$\(TZ=Asia\/Shanghai date \+%Y%m%d\)/);
+  assert.match(workflow, /--title "Loon Rules Latest \(\$\{RELEASE_DATE\}\)"/);
+});
+
 test("latest release publishing does not manually push a local latest tag first", () => {
   assert.doesNotMatch(workflow, /git push origin "\$tag"/);
 });

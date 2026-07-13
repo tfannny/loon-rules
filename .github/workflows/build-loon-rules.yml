@@ -138,11 +138,12 @@ jobs:
 
           git tag -d "$tag" >/dev/null 2>&1 || true
           git push origin ":refs/tags/${tag}" || true
+          RELEASE_DATE=$(TZ=Asia/Shanghai date +%Y%m%d)
 
           gh release create "$tag" \
             dist/loon-rules/*.list \
             dist/loon-rules.zip \
             dist/metadata.json \
-            --title "Loon Rules Latest (${UPSTREAM_COMMIT_SHORT})" \
+            --title "Loon Rules Latest (${RELEASE_DATE})" \
             --notes-file dist/release-notes.md \
             --target "${{ steps.release_branch.outputs.commit }}"
