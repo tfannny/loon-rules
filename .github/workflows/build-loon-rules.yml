@@ -131,19 +131,25 @@ jobs:
           set -euo pipefail
 
           tag="loon-rules-latest"
+          release_commit="${{ steps.release_branch.outputs.commit }}"
+          RELEASE_DATE=$(TZ=Asia/Shanghai date +%Y%m%d)
+          assets=(dist/loon-rules/*.list dist/loon-rules.zip dist/metadata.json)
+
+          git -C release-branch tag -f "$tag" "$release_commit"
+          git -C release-branch push --force origin "refs/tags/${tag}"
 
           if gh release view "$tag" >/dev/null 2>&1; then
-            gh release delete "$tag" --yes --cleanup-tag
+            gh release edit "$tag" \
+              --title "Loon Rules Latest (${RELEASE_DATE})" \
+              --notes-file dist/release-notes.md \
+              --target "$release_commit" \
+              --latest
+            gh release upload "$tag" "${assets[@]}" --clobber
+          else
+            gh release create "$tag" "${assets[@]}" \
+              --title "Loon Rules Latest (${RELEASE_DATE})" \
+              --notes-file dist/release-notes.md \
+              --target "$release_commit" \
+              --verify-tag \
+              --latest
           fi
-
-          git tag -d "$tag" >/dev/null 2>&1 || true
-          git push origin ":refs/tags/${tag}" || true
-          RELEASE_DATE=$(TZ=Asia/Shanghai date +%Y%m%d)
-
-          gh release create "$tag" \
-            dist/loon-rules/*.list \
-            dist/loon-rules.zip \
-            dist/metadata.json \
-            --title "Loon Rules Latest (${RELEASE_DATE})" \
-            --notes-file dist/release-notes.md \
-            --target "${{ steps.release_branch.outputs.commit }}"
