@@ -1,0 +1,20 @@
+# NAME: telegramcidr
+# AUTHOR: Loyalsoldier/clash-rules converted for Loon
+# REPO: https://github.com/Loyalsoldier/clash-rules
+# SOURCE: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/telegramcidr.txt
+# UPDATED: 2026-07-24 06:57:57
+# IP-CIDR: 8
+# IP-CIDR6: 4
+# TOTAL: 12
+IP-CIDR,91.105.192.0/23,no-resolve
+IP-CIDR,91.108.4.0/22,no-resolve
+IP-CIDR,91.108.8.0/21,no-resolve
+IP-CIDR,91.108.16.0/21,no-resolve
+IP-CIDR,91.108.56.0/22,no-resolve
+IP-CIDR,95.161.64.0/20,no-resolve
+IP-CIDR,149.154.160.0/20,no-resolve
+IP-CIDR,185.76.151.0/24,no-resolve
+IP-CIDR6,2001:67c:4e8::/48,no-resolve
+IP-CIDR6,2001:b28:f23c::/47,no-resolve
+IP-CIDR6,2001:b28:f23f::/48,no-resolve
+IP-CIDR6,2a0a:f280::/32,no-resolve

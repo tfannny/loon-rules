@@ -1,0 +1,77 @@
+{
+  "updatedAt": "2026-07-24 06:57:57",
+  "fileCount": 14,
+  "totalRules": 318928,
+  "files": [
+    {
+      "input": "apple.txt",
+      "output": "apple.list",
+      "rules": 164
+    },
+    {
+      "input": "applications.txt",
+      "output": "applications.list",
+      "rules": 98
+    },
+    {
+      "input": "cncidr.txt",
+      "output": "cncidr.list",
+      "rules": 5817
+    },
+    {
+      "input": "direct.txt",
+      "output": "direct.list",
+      "rules": 112081
+    },
+    {
+      "input": "gfw.txt",
+      "output": "gfw.list",
+      "rules": 4366
+    },
+    {
+      "input": "google.txt",
+      "output": "google.list",
+      "rules": 112
+    },
+    {
+      "input": "greatfire.txt",
+      "output": "greatfire.list",
+      "rules": 10
+    },
+    {
+      "input": "icloud.txt",
+      "output": "icloud.list",
+      "rules": 53
+    },
+    {
+      "input": "lancidr.txt",
+      "output": "lancidr.list",
+      "rules": 18
+    },
+    {
+      "input": "private.txt",
+      "output": "private.list",
+      "rules": 130
+    },
+    {
+      "input": "proxy.txt",
+      "output": "proxy.list",
+      "rules": 26894
+    },
+    {
+      "input": "reject.txt",
+      "output": "reject.list",
+      "rules": 168344
+    },
+    {
+      "input": "telegramcidr.txt",
+      "output": "telegramcidr.list",
+      "rules": 12
+    },
+    {
+      "input": "tld-not-cn.txt",
+      "output": "tld-not-cn.list",
+      "rules": 829
+    }
+  ]
+}
