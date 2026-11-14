@@ -1,0 +1,19 @@
+# NAME: greatfire
+# AUTHOR: Loyalsoldier/clash-rules converted for Loon
+# REPO: https://github.com/Loyalsoldier/clash-rules
+# SOURCE: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/greatfire.txt
+# UPDATED: 2026-11-14 09:59:49
+# DOMAIN-SUFFIX: 12
+# TOTAL: 12
+DOMAIN-SUFFIX,applecensorship.com
+DOMAIN-SUFFIX,freebrowser.org
+DOMAIN-SUFFIX,freewechat.com
+DOMAIN-SUFFIX,freeweibo.com
+DOMAIN-SUFFIX,freezhihu.org
+DOMAIN-SUFFIX,googlecensorship.org
+DOMAIN-SUFFIX,googleplaycensorship.com
+DOMAIN-SUFFIX,greatfire.org
+DOMAIN-SUFFIX,greatfirevpn.com
+DOMAIN-SUFFIX,manyvoices.news
+DOMAIN-SUFFIX,pao-pao.net
+DOMAIN-SUFFIX,wikiunblocked.org
